@@ -1,0 +1,11 @@
+[
+  { "date": "2026-07", "text": "Invited speaker at the Mathematics of 3D Reconstruction 2026 workshop, organized by ICERM.", "link": "" },
+  { "date": "2026-06", "text": "\"Global-Aware Edge Prioritization for Pose Graph Initialization\" received an oral and is a CVPR 2026 Best Paper Award candidate (top 0.4% of submissions).", "link": "" },
+  { "date": "2026-06", "text": "\"Co-organizing the \"1st Generative 3D Reconstruction\" tutorial at CVPR 2026.", "link": "" },
+  { "date": "2025-12", "text": "Started as a part-time Visiting Researcher at Google Zurich.", "link": "" },
+  { "date": "2025-10", "text": "Co-organizing the \"RANSAC in 2025\" tutorial at ICCV 2025.", "link": "" },
+  { "date": "2024-09", "text": "Ranked among the top-25 researchers by number of accepted papers at ECCV 2024 (9 papers).", "link": "https://papercopilot.com/paper-list/eccv-paper-list/eccv-2024-paper-list/" },
+  { "date": "2024-09", "text": "Awarded a Career Seed Award (30k CHF) as PI for 2024–2025.", "link": "" },
+  { "date": "2024-07", "text": "GLOMAP — Global Structure-from-Motion Revisited — accepted to ECCV 2024.", "link": "https://github.com/colmap/glomap" },
+  { "date": "2023-09", "text": "Promoted to Established Researcher in the Computer Vision and Geometry Group at ETH Zürich.", "link": "" }
+]

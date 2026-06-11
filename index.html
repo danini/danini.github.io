@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Daniel Barath</title>
+  <meta name="description" content="Daniel Barath — computer vision researcher at ETH Zürich. Robust estimation, structure-from-motion, and 3D reconstruction." />
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="stylesheet" href="css/style.css" />
+  <!-- Set theme before paint to avoid flash of wrong theme -->
+  <script>
+    (function () {
+      try {
+        var stored = localStorage.getItem('theme');
+        var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        var theme = stored || (prefersDark ? 'dark' : 'light');
+        document.documentElement.setAttribute('data-theme', theme);
+      } catch (e) {}
+    })();
+  </script>
+</head>
+<body>
+  <header class="topbar">
+    <nav class="nav container">
+      <a class="brand" href="#top">Daniel&nbsp;Barath</a>
+      <div class="nav-links">
+        <a href="#about">About</a>
+        <a href="#news">News</a>
+        <a href="#publications">Publications</a>
+        <button id="theme-toggle" class="theme-toggle" type="button" aria-label="Toggle dark mode" title="Toggle dark mode">
+          <span class="theme-icon" aria-hidden="true"></span>
+        </button>
+      </div>
+    </nav>
+  </header>
+
+  <main id="top" class="container">
+    <!-- ABOUT -->
+    <section id="about" class="about">
+      <img class="avatar" src="picture.jpg" alt="Portrait of Daniel Barath" />
+      <div class="about-text">
+        <h1>Daniel Barath</h1>
+        <p class="title">Senior Researcher · Computer Vision and Geometry Group, ETH&nbsp;Zürich&ensp;·&ensp;Visiting Researcher · Google&nbsp;Zurich</p>
+        <p class="bio">
+          I am a Senior Researcher in the Computer Vision and Geometry Group at
+          ETH&nbsp;Zürich and a part-time Visiting Researcher at Google&nbsp;Zurich. My
+          research focuses on robust estimation, structure-from-motion, and 3D scene
+          understanding — including widely-used geometric estimators such as
+          Graph-Cut RANSAC and MAGSAC, and global SfM methods like GLOMAP.
+        </p>
+        <ul class="stats">
+          <li><strong>50+</strong> papers (35 first-author)</li>
+          <li><strong>4,500+</strong> citations</li>
+          <li><strong>28</strong> h-index</li>
+        </ul>
+        <div class="links">
+          <a class="link-btn" href="https://scholar.google.com/citations?user=U9-D8DYAAAAJ&hl=en" target="_blank" rel="noopener">Google Scholar</a>
+          <a class="link-btn" href="https://github.com/danini" target="_blank" rel="noopener">GitHub</a>
+          <a class="link-btn" href="mailto:dbarath@ethz.ch">Email</a>
+          <a class="link-btn" href="CV_Daniel_Barath.pdf" target="_blank" rel="noopener ">CV</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- NEWS -->
+    <section id="news" class="news">
+      <h2>News</h2>
+      <ul id="news-list" class="news-list">
+        <li class="loading">Loading news…</li>
+      </ul>
+    </section>
+
+    <!-- PUBLICATIONS -->
+    <section id="publications" class="publications">
+      <h2>Publications</h2>
+      <div class="pub-controls">
+        <input id="pub-search" class="pub-search" type="search" placeholder="Search title, author, venue…" aria-label="Search publications" />
+        <div id="year-filters" class="year-filters" role="group" aria-label="Filter by year"></div>
+      </div>
+      <ol id="pub-list" class="pub-list">
+        <li class="loading">Loading publications…</li>
+      </ol>
+    </section>
+  </main>
+
+  <footer class="footer container">
+    <p>© <span id="year"></span> Daniel Barath · Built with plain HTML, CSS &amp; JS.</p>
+  </footer>
+
+  <script src="js/main.js"></script>
+</body>
+</html>
