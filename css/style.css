@@ -149,6 +149,20 @@ section { padding: 40px 0; }
   white-space: nowrap;
 }
 .news-link:hover { border-color: var(--accent); text-decoration: none; }
+.news-toggle {
+  display: inline-block;
+  margin-top: 14px;
+  padding: 6px 14px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text-soft);
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: border-color 0.2s, color 0.2s;
+}
+.news-toggle:hover { border-color: var(--accent); color: var(--accent); }
 
 /* ---- Publications ---- */
 .pub-controls { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; justify-content: space-between; margin-bottom: 20px; }

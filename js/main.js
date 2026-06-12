@@ -35,31 +35,59 @@
   }
 
   // ---- News ----
+  var NEWS_LIMIT = 10;
+
+  function makeNewsItem(item) {
+    var li = el("li");
+    li.appendChild(el("span", "news-date", formatDate(item.date)));
+    var body = el("span", "news-text", item.text);
+    if (item.link) {
+      var a = el("a", "news-link", "LINK");
+      a.href = item.link;
+      a.target = "_blank";
+      a.rel = "noopener";
+      body.appendChild(document.createTextNode(" "));
+      body.appendChild(a);
+    }
+    li.appendChild(body);
+    return li;
+  }
+
   function renderNews(items) {
     var list = document.getElementById("news-list");
+    var oldBtn = document.getElementById("news-toggle");
+    if (oldBtn) oldBtn.parentNode.removeChild(oldBtn);
     list.innerHTML = "";
     if (!items || !items.length) {
       list.appendChild(el("li", "empty", "No news yet."));
       return;
     }
-    items
-      .slice()
-      .sort(function (a, b) { return String(b.date).localeCompare(String(a.date)); })
-      .forEach(function (item) {
-        var li = el("li");
-        li.appendChild(el("span", "news-date", formatDate(item.date)));
-        var body = el("span", "news-text", item.text);
-        if (item.link) {
-          var a = el("a", "news-link", "LINK");
-          a.href = item.link;
-          a.target = "_blank";
-          a.rel = "noopener";
-          body.appendChild(document.createTextNode(" "));
-          body.appendChild(a);
-        }
-        li.appendChild(body);
-        list.appendChild(li);
+    var sorted = items.slice().sort(function (a, b) {
+      return String(b.date).localeCompare(String(a.date));
+    });
+
+    var expanded = false;
+    var hidden = sorted.length - NEWS_LIMIT;
+    function draw() {
+      list.innerHTML = "";
+      var count = expanded ? sorted.length : Math.min(NEWS_LIMIT, sorted.length);
+      var frag = document.createDocumentFragment();
+      for (var i = 0; i < count; i++) frag.appendChild(makeNewsItem(sorted[i]));
+      list.appendChild(frag);
+    }
+    draw();
+
+    if (hidden > 0) {
+      var btn = el("button", "news-toggle", "Show more (" + hidden + ")");
+      btn.id = "news-toggle";
+      btn.type = "button";
+      btn.addEventListener("click", function () {
+        expanded = !expanded;
+        draw();
+        btn.textContent = expanded ? "Show less" : "Show more (" + hidden + ")";
       });
+      list.insertAdjacentElement("afterend", btn);
+    }
   }
 
   function formatDate(d) {
