@@ -137,7 +137,6 @@ section { padding: 40px 0; }
 .news-text { color: var(--text); }
 .news-link {
   display: inline-block;
-  margin-left: 8px;
   font-size: 0.68rem;
   font-weight: 700;
   letter-spacing: 0.04em;
@@ -209,7 +208,6 @@ section { padding: 40px 0; }
 .pub-title { font-weight: 600; font-size: 1.02rem; margin: 0 0 4px; }
 .pub-note {
   display: inline-block;
-  margin-left: 8px;
   font-size: 0.72rem;
   font-weight: 700;
   letter-spacing: 0.02em;
@@ -223,7 +221,7 @@ section { padding: 40px 0; }
 .pub-authors { color: var(--text-soft); font-size: 0.9rem; margin: 0 0 8px; }
 .pub-authors .me { color: var(--text); font-weight: 600; }
 
-.pub-links { display: flex; flex-wrap: wrap; gap: 7px; }
+.pub-links { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 3px; }
 .chip {
   font-size: 0.78rem;
   font-weight: 600;

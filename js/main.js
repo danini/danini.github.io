@@ -135,7 +135,10 @@
     var body = el("div", "pub-body");
     var titleRow = el("h3", "pub-title");
     titleRow.appendChild(document.createTextNode(p.title));
-    if (p.note) titleRow.appendChild(el("span", "pub-note", p.note));
+    if (p.note) {
+      titleRow.appendChild(document.createTextNode(" "));
+      titleRow.appendChild(el("span", "pub-note", p.note));
+    }
     body.appendChild(titleRow);
     body.appendChild(renderAuthors(p.authors));
     body.appendChild(renderLinks(p.links));
