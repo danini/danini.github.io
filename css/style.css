@@ -14,15 +14,15 @@
 }
 
 [data-theme="dark"] {
-  --bg: #0e1116;
-  --bg-soft: #161b22;
-  --surface: #161b22;
-  --border: #2a313c;
-  --text: #e7eaee;
-  --text-soft: #9aa4b2;
-  --accent: #6ea8fe;
-  --accent-soft: rgba(110, 168, 254, 0.16);
-  --shadow: 0 1px 3px rgba(0, 0, 0, 0.5), 0 8px 24px rgba(0, 0, 0, 0.4);
+  --bg: #0b0e13;
+  --bg-soft: #1c232e;
+  --surface: #161d27;
+  --border: #38424f;
+  --text: #f2f5f8;
+  --text-soft: #b9c2cf;
+  --accent: #7fb4ff;
+  --accent-soft: rgba(127, 180, 255, 0.20);
+  --shadow: 0 1px 3px rgba(0, 0, 0, 0.6), 0 10px 28px rgba(0, 0, 0, 0.5);
 }
 
 /* ---- Base ---- */
@@ -73,18 +73,21 @@ section { padding: 40px 0; }
 
 .theme-toggle {
   width: 36px; height: 36px;
+  padding: 0;
   border: 1px solid var(--border);
   background: var(--surface);
+  color: var(--text-soft);
   border-radius: 50%;
   cursor: pointer;
   display: inline-flex; align-items: center; justify-content: center;
-  transition: border-color 0.2s, transform 0.2s;
+  transition: border-color 0.2s, color 0.2s, transform 0.2s;
 }
-.theme-toggle:hover { border-color: var(--accent); transform: scale(1.05); }
-.theme-icon { width: 18px; height: 18px; display: inline-block; }
-/* sun icon in dark mode (click -> light), moon in light mode (click -> dark) */
-.theme-icon::before { content: "🌙"; font-size: 16px; line-height: 1; }
-[data-theme="dark"] .theme-icon::before { content: "☀️"; }
+.theme-toggle:hover { border-color: var(--accent); color: var(--accent); transform: scale(1.05); }
+.theme-toggle svg { width: 18px; height: 18px; display: block; }
+/* moon shown in light mode (click -> dark); sun shown in dark mode (click -> light) */
+.theme-toggle .icon-sun { display: none; }
+[data-theme="dark"] .theme-toggle .icon-moon { display: none; }
+[data-theme="dark"] .theme-toggle .icon-sun { display: block; }
 
 /* ---- About ---- */
 .about { display: flex; gap: 28px; align-items: center; flex-wrap: wrap; padding-top: 48px; }
@@ -131,6 +134,22 @@ section { padding: 40px 0; }
   font-size: 0.9rem;
   min-width: 72px;
 }
+.news-text { color: var(--text); }
+.news-link {
+  display: inline-block;
+  margin-left: 8px;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  padding: 1px 7px;
+  border-radius: 5px;
+  background: var(--accent-soft);
+  color: var(--accent);
+  border: 1px solid transparent;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+.news-link:hover { border-color: var(--accent); text-decoration: none; }
 
 /* ---- Publications ---- */
 .pub-controls { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; justify-content: space-between; margin-bottom: 20px; }
@@ -173,7 +192,10 @@ section { padding: 40px 0; }
   transition: transform 0.18s ease, border-color 0.18s ease;
 }
 .pub-item:hover { transform: translateY(-2px); border-color: var(--accent); }
-.pub-item.highlight { border-left: 3px solid var(--accent); }
+
+/* sentinel + count shown while lazy-loading more publications */
+.pub-sentinel { height: 1px; }
+.pub-more { text-align: center; color: var(--text-soft); font-size: 0.85rem; padding: 6px 0 2px; }
 
 .pub-badge {
   flex-shrink: 0;
@@ -223,7 +245,9 @@ section { padding: 40px 0; }
 /* ---- Responsive ---- */
 @media (max-width: 600px) {
   .about { flex-direction: column; text-align: center; }
+  .avatar { width: 200px; height: 200px; }
   .links { justify-content: center; }
+  .stats { flex-direction: column; align-items: center; gap: 4px; }
   .nav-links { gap: 12px; }
   .nav-links a { font-size: 0.88rem; }
   .pub-item { flex-direction: column; gap: 8px; }

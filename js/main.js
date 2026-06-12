@@ -48,15 +48,14 @@
       .forEach(function (item) {
         var li = el("li");
         li.appendChild(el("span", "news-date", formatDate(item.date)));
-        var body = el("span", "news-text");
+        var body = el("span", "news-text", item.text);
         if (item.link) {
-          var a = el("a", null, item.text);
+          var a = el("a", "news-link", "LINK");
           a.href = item.link;
           a.target = "_blank";
           a.rel = "noopener";
+          body.appendChild(document.createTextNode(" "));
           body.appendChild(a);
-        } else {
-          body.textContent = item.text;
         }
         li.appendChild(body);
         list.appendChild(li);
@@ -78,6 +77,12 @@
   var allPapers = [];
   var activeYear = "all";
   var searchTerm = "";
+
+  // lazy-loading state
+  var PAGE = 12;
+  var filtered = [];
+  var renderedCount = 0;
+  var sentinel = null, moreLabel = null, pubObserver = null;
 
   function renderAuthors(authors) {
     var span = el("span", "pub-authors");
@@ -119,33 +124,82 @@
     return true;
   }
 
+  function makePubItem(p) {
+    var li = el("li", "pub-item");
+
+    var badge = el("div", "pub-badge");
+    badge.appendChild(el("span", "pub-venue", p.venue || ""));
+    badge.appendChild(el("span", "pub-year", p.year != null ? String(p.year) : ""));
+    li.appendChild(badge);
+
+    var body = el("div", "pub-body");
+    var titleRow = el("h3", "pub-title");
+    titleRow.appendChild(document.createTextNode(p.title));
+    if (p.note) titleRow.appendChild(el("span", "pub-note", p.note));
+    body.appendChild(titleRow);
+    body.appendChild(renderAuthors(p.authors));
+    body.appendChild(renderLinks(p.links));
+    li.appendChild(body);
+    return li;
+  }
+
+  function updateMoreLabel() {
+    if (!moreLabel) return;
+    if (renderedCount < filtered.length) {
+      moreLabel.textContent = "Showing " + renderedCount + " of " + filtered.length;
+      moreLabel.style.display = "";
+    } else {
+      moreLabel.style.display = "none";
+    }
+  }
+
+  function appendBatch() {
+    var list = document.getElementById("pub-list");
+    var end = Math.min(renderedCount + PAGE, filtered.length);
+    var frag = document.createDocumentFragment();
+    for (var i = renderedCount; i < end; i++) frag.appendChild(makePubItem(filtered[i]));
+    list.appendChild(frag);
+    renderedCount = end;
+    updateMoreLabel();
+  }
+
+  // keep appending while the sentinel sits within (or just below) the viewport
+  function fill() {
+    if (!sentinel) { while (renderedCount < filtered.length) appendBatch(); return; }
+    var guard = 0;
+    while (renderedCount < filtered.length && guard++ < 500) {
+      if (sentinel.getBoundingClientRect().top > window.innerHeight + 300) break;
+      appendBatch();
+    }
+  }
+
+  function setupLazyLoad() {
+    var list = document.getElementById("pub-list");
+    sentinel = el("div", "pub-sentinel");
+    moreLabel = el("div", "pub-more");
+    moreLabel.style.display = "none";
+    list.insertAdjacentElement("afterend", sentinel);
+    sentinel.insertAdjacentElement("afterend", moreLabel);
+    if ("IntersectionObserver" in window) {
+      pubObserver = new IntersectionObserver(function (entries) {
+        if (entries[0].isIntersecting) fill();
+      }, { rootMargin: "300px 0px" });
+      pubObserver.observe(sentinel);
+    }
+  }
+
   function renderPapers() {
     var list = document.getElementById("pub-list");
     list.innerHTML = "";
-    var shown = allPapers.filter(paperMatches);
-    if (!shown.length) {
+    renderedCount = 0;
+    filtered = allPapers.filter(paperMatches);
+    if (!filtered.length) {
       list.appendChild(el("li", "empty", "No publications match your filter."));
+      updateMoreLabel();
       return;
     }
-    shown.forEach(function (p) {
-      var li = el("li", "pub-item" + (p.highlight ? " highlight" : ""));
-
-      var badge = el("div", "pub-badge");
-      badge.appendChild(el("span", "pub-venue", p.venue || ""));
-      badge.appendChild(el("span", "pub-year", p.year != null ? String(p.year) : ""));
-      li.appendChild(badge);
-
-      var body = el("div", "pub-body");
-      var titleRow = el("h3", "pub-title");
-      titleRow.appendChild(document.createTextNode(p.title));
-      if (p.note) titleRow.appendChild(el("span", "pub-note", p.note));
-      body.appendChild(titleRow);
-      body.appendChild(renderAuthors(p.authors));
-      body.appendChild(renderLinks(p.links));
-      li.appendChild(body);
-
-      list.appendChild(li);
-    });
+    appendBatch();
+    fill();
   }
 
   function buildYearFilters() {
@@ -194,6 +248,7 @@
         return (b.year || 0) - (a.year || 0);
       });
       buildYearFilters();
+      setupLazyLoad();
       renderPapers();
     })
     .catch(function (err) {
