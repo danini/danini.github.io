@@ -367,7 +367,7 @@
   fetchJSON("data/papers.json")
     .then(function (papers) {
       allPapers = (papers || []).slice().sort(function (a, b) {
-        return (b.year || 0) - (a.year || 0);
+        return (b.year || 0) - (a.year || 0) || (b.month || 0) - (a.month || 0);
       });
       buildYearFilters();
       setupLazyLoad();
