@@ -143,6 +143,95 @@
     return wrap;
   }
 
+  // ---- BibTeX ----
+  var VENUE_FULL = {
+    CVPR: "IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)",
+    ICCV: "IEEE/CVF International Conference on Computer Vision (ICCV)",
+    ECCV: "European Conference on Computer Vision (ECCV)",
+    WACV: "IEEE/CVF Winter Conference on Applications of Computer Vision (WACV)",
+    BMVC: "British Machine Vision Conference (BMVC)",
+    ICRA: "IEEE International Conference on Robotics and Automation (ICRA)",
+    "3DV": "International Conference on 3D Vision (3DV)",
+    ICPR: "International Conference on Pattern Recognition (ICPR)",
+    NeurIPS: "Advances in Neural Information Processing Systems (NeurIPS)",
+    ICLR: "International Conference on Learning Representations (ICLR)",
+    ICML: "International Conference on Machine Learning (ICML)",
+    VISAPP: "International Conference on Computer Vision Theory and Applications (VISAPP)",
+    TPAMI: "IEEE Transactions on Pattern Analysis and Machine Intelligence",
+    IJCV: "International Journal of Computer Vision",
+    TIP: "IEEE Transactions on Image Processing",
+    CVIU: "Computer Vision and Image Understanding",
+    "Pattern Recognition Letters": "Pattern Recognition Letters"
+  };
+  var JOURNALS = { TPAMI: 1, IJCV: 1, TIP: 1, CVIU: 1, "Pattern Recognition Letters": 1 };
+
+  function asciiLower(s) {
+    s = s || "";
+    if (s.normalize) s = s.normalize("NFD").replace(/[̀-ͯ]/g, "");
+    return s.toLowerCase().replace(/[^a-z0-9]/g, "");
+  }
+
+  function bibKey(p) {
+    var first = (p.authors && p.authors[0]) || "anon";
+    var last = first.trim().split(/\s+/).pop();
+    var word = (p.title.match(/[A-Za-z0-9]+/) || ["paper"])[0];
+    return asciiLower(last) + (p.year || "") + asciiLower(word);
+  }
+
+  function bibtexFor(p) {
+    var isJournal = !!JOURNALS[p.venue];
+    var type = isJournal ? "article" : "inproceedings";
+    var venue = VENUE_FULL[p.venue] || p.venue || "";
+    var fieldName = isJournal ? "journal" : "booktitle";
+    var lines = [
+      "@" + type + "{" + bibKey(p) + ",",
+      "  author = {" + (p.authors || []).join(" and ") + "},",
+      "  title = {" + p.title + "},",
+      "  " + fieldName + " = {" + venue + "},",
+      "  year = {" + (p.year || "") + "}",
+      "}"
+    ];
+    return lines.join("\n");
+  }
+
+  function copyText(text, btn) {
+    var original = btn.getAttribute("data-label") || btn.textContent;
+    function done() {
+      btn.textContent = "Copied!";
+      btn.classList.add("copied");
+      setTimeout(function () {
+        btn.textContent = original;
+        btn.classList.remove("copied");
+      }, 1500);
+    }
+    function fallback() {
+      var ta = document.createElement("textarea");
+      ta.value = text;
+      ta.style.position = "fixed";
+      ta.style.top = "-9999px";
+      document.body.appendChild(ta);
+      ta.focus();
+      ta.select();
+      try { document.execCommand("copy"); } catch (e) {}
+      document.body.removeChild(ta);
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(done, function () { fallback(); done(); });
+    } else {
+      fallback();
+      done();
+    }
+  }
+
+  function makeBibButton(p) {
+    var btn = el("button", "chip chip-bib", "BibTeX");
+    btn.type = "button";
+    btn.setAttribute("data-label", "BibTeX");
+    btn.title = "Copy BibTeX to clipboard";
+    btn.addEventListener("click", function () { copyText(bibtexFor(p), btn); });
+    return btn;
+  }
+
   function paperMatches(p) {
     if (activeYear !== "all" && String(p.year) !== String(activeYear)) return false;
     if (searchTerm) {
@@ -169,7 +258,9 @@
     }
     body.appendChild(titleRow);
     body.appendChild(renderAuthors(p.authors));
-    body.appendChild(renderLinks(p.links));
+    var linksWrap = renderLinks(p.links);
+    linksWrap.appendChild(makeBibButton(p));
+    body.appendChild(linksWrap);
     li.appendChild(body);
     return li;
   }

@@ -246,6 +246,8 @@ section { padding: 40px 0; }
   border: 1px solid transparent;
 }
 .chip:hover { text-decoration: none; border-color: var(--accent); }
+.chip-bib { font: inherit; font-size: 0.78rem; font-weight: 600; line-height: 1.45; cursor: pointer; }
+.chip.copied { background: var(--accent); color: #fff; border-color: var(--accent); }
 
 .loading { color: var(--text-soft); font-style: italic; padding: 10px 0; }
 .error { color: #e5484d; }
